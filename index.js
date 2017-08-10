@@ -1,11 +1,14 @@
 const selenium = require("selenium-webdriver");
 const By = selenium.By;
 
+const HomePage = require('./pages/home');
+
 const driver = new selenium.Builder()
     .forBrowser("chrome")
     .build();
 
-driver.get(process.env.URL);
+const homePage = new HomePage(driver);
+homePage.open();
 
 const invitees = [
     'Gonzalo Torres del Fierro',
@@ -35,32 +38,11 @@ const invitees = [
  ]; 
 
 
-const locators = {
-    inviteeForm: By.id("registrar"),
-    inviteeNameField: By.css("#registrar input[name='name']"),
-    toggleNonRespondersVisiblity: By.css(".main  > div input"),
-    removeButtonForInvitee: invitee => By.xpath(`//span[text() = "${invitee}"]/../button[last()]`)  
-}
 
-function addInvitee(name) {
-    driver.findElement(locators.inviteeNameField)
-        .sendKeys(name);
-    
-    driver.findElement(locators.inviteeForm).submit();
-}
 
-function removeInvitee(invitee) {
-    driver.findElement(locators.removeButtonForInvitee(invitee))
-        .click();
-}
 
-function toggleNonRespondersVisiblity() {
-    driver.findElement(locators.toggleNonRespondersVisiblity)
-        .click();
-}
+invitees.forEach(homePage.addInvitee, homePage);
 
-invitees.forEach(addInvitee);
+homePage.removeInvitee("Shadd Anderson");
 
-removeInvitee("Shadd Anderson");
-
-//toggleNonRespondersVisiblity();
+homePage.toggleNonRespondersVisiblity();
