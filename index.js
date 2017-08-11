@@ -1,3 +1,4 @@
+const fs = require("fs");
 const selenium = require("selenium-webdriver");
 const By = selenium.By;
 
@@ -43,6 +44,17 @@ const invitees = [
 
 invitees.forEach(homePage.addInvitee, homePage);
 
-homePage.removeInvitee("Shadd Anderson");
+homePage
+    .findInviteeByName("David Riesz")
+    .remove();
 
-homePage.toggleNonRespondersVisiblity();
+homePage
+    .findInviteeByName("Jennifer Nordell")
+    .toggleConfirmation();
+
+driver.takeScreenshot().then((image, err) => {
+    fs.writeFile("weird-layout.png", image, "base64",
+        err => console.error(err));
+    });
+
+//homePage.toggleNonRespondersVisiblity();
